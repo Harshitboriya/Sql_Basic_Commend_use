@@ -1,0 +1,747 @@
+
+show databases;
+create databases std;
+
+use std;
+show tables;
+
+---------------------------------student-------------------------
+
+
+create table student(sid varchar(30) ,
+sname varchar(30),slname varchar(90),
+sclass varchar(60),
+sloc varchar(30),spn int(30),cid varchar(80));
+
+insert into student (sid,sname,slname,sclass,sloc,spn,cid) values 
+('101','sam','soni','science','indore',988989998,'c1'),
+('102','harshit','patidar','maths','goa',888739900,'c2'),
+('103','raj','kundra','hindi','delhi',775565327,'c3'),
+('104','veer' ,'jain','english','indore',937665372,'c4'),
+('105','nayan' ,'singh','bio','indore',998773834,'c5'),
+('106','anuj' ,'patidar','bio','mumbai',998773834,'c1');
+
+
+
+-------------------------------test--------------------------------
+
+create table test (tid varchar(30) ,
+sid varchar(30),cid varchar(90),
+marks int(60) not null);
+
+insert into test(tid,sid,cid,marks) values
+('t1','101','c1',80),
+('t2','102','c2',70),
+('t3','103','c3',60),
+('t4','104','c4',50),
+('t5','105','c5',90);
+
+
+
+alter table test add foreign key(sid) references student(sid);
+alter table test add foreign key(cid) references course(cid);
+
+
+
+-------------------faculty-------------------------------------
+
+create table faculty(fid varchar(30) ,
+fname varchar(30),fsub varchar(30),
+fsal int(40),fpn int(30) ,cid varchar(80));
+
+insert into faculty (fid,fname,fsub,fsal,fpn,cid) values 
+('f1','mahin','science','50000',988989998,'c1'),
+('f2','same','maths','90000',888739900,'c2'),
+('f3','nori','hindi','40000',775565327,'c3'),
+('f4','kavi' ,'english','30000',937665372,'c4'),
+('f5','cahhaya' ,'bio','10000',998773834,'c5'),
+('f6','honi' ,'bio','10000',998773834,'c5');
+select * from faculty;
+
+
+------------------------hostel---------------------------------
+
+create table hostel (hid varchar(30),hname varchar(30),
+hfee int(30),sid varchar(70));
+
+insert into hostel (hid,hname,hfee,sid)values
+('h1','colive',9000,'101'),
+('h2','colive',8000,'102'),
+('h3','colive',4000,'103'),
+('h4','colive',20000,'104'),
+('h5','colive',65000,'105');
+
+select * from hostel;
+
+
+
+--------------------course--------------------------------
+create table course (cid varchar(30) unique,cname varchar(30),cdur  varchar(30),sid varchar(70));
+
+insert into course (cid,cname,cdur,sid) values
+('c1','science','1year','101'),
+('c2','maths','1year','102'),
+('c3','hindi','1year','103'),
+('c4','english','1year','104'),
+('c5','bio','1year','105');
+select * from course;
+
+
+create table domi (tid varchar(30) unique not null,
+sid varchar(30),cid varchar(90),
+marks int(60) not null);
+
+insert into domi(tid,sid,cid,marks) values
+('t15','101','c1',80),
+('t25','102','c2',70),
+('t35','103','c3',60),
+('t45','104','c4',50),
+('t55','105','c5',90);
+
+
+drop table domi;
+
+
+-------------------adding pk and fk--------------------------------------
+
+alter table student add primary key (sid);
+
+alter table student add foreign key(cid) references course(cid);
+desc  student;
+
+alter table course add primary key(cid);
+alter table course add foreign key(sid) references student(sid);
+desc course;
+
+alter table hostel add foreign key(sid) references student(sid);
+desc hostel;
+
+alter table faculty add foreign key(cid) references course(cid);
+desc faculty;
+
+
+
+------------------------using command----------------------------------------
+
+select * from student;
+select sname ,slname,cid from student;
+select sname as 'name of student' , sclass as 'class of student' from student;
+select * from student where sname='harshit' ;
+select * from student where sid=101 OR sid = 102;
+select * from student where sclass='bio' AND sloc='indore';
+select * from student where sid=102 OR sloc='goa' OR cid='c2';
+SELECT * from student where sclass IN('bio','maths','english');
+SELECT * from student where sclass NOT IN('bio','maths','english');
+SELECT * from student where sclASS <> 'BIO';
+SELECT * from student where sclASS != 'BIO';
+SELECT * from student where sclass='BIO' and cid='c5';
+
+select * from hostel;
+select hid,hname,sid from hostel where hfee>4000;
+select hid,hname,sid from hostel where hfee>=4000;
+select hid,hname,sid from hostel where hfee<9000;
+select hid,hname,sid from hostel where hfee>4000 and hfee<30000 ;
+select hid,hname,sid from hostel where hfee BETWEEN 4000 AND 300000;
+
+select DISTINCT(hname) from hostel;
+select max(hfee) as maxfee,min(hfee) as minfee,avg(hfee) as avgfee from hostel;
+select slname,length(slname) from  student;
+select sname,slname,sloc,sid from student order by sid ;
+select sname,slname,sloc,sid from student order by sid desc;
+select sname,slname,sloc,sid from student order by sid limit 3;
+select sname,slname,sloc,sid from student order by sid desc;
+select sname,slname,sloc,sid from student order by sid desc limit 3;
+select sname,slname,sloc,sid from student order by sid  limit 3,2;
+
+
+
+select sname,slname,sid from student where cid is null;
+select sname,slname,sid from student where cid is not null;
+
+select sname ,count(sid) from student group by sid;
+select slname ,count(slname) from student group by slname;
+select sloc ,count(sloc) from student group by sloc ;
+select sloc ,count(sloc) from student group by sloc order by max(sid) ;
+select sloc ,count(sloc) from student group by sloc order by max(sid) desc;
+select sloc ,count(sloc) from student group by sloc  having sloc='indore';
+select sname ,count(sname) from student group by sname  having sname='harsh';
+
+
+
+
+select sname ,cname from student inner join course on student.sid = course.sid;
+select * from student left join course on student.sid = course.sid;
+select * from student rigth join course on student.sid = course.sid;
+select * from student full join course on student.sid = course.sid;
+select sname,cname from student rigth join course on student.sid = course.sid;
+
+select sname,slname from student where sid=(select max(sid) from student);
+select sname,slname,sloc from student where sid=(select min(sid) from student);
+select sname,slname,sloc from student where sid<(select max(sid) from student);
+select sname,slname,sloc from student where sid>(select min(sid) from student);
+select sname,slname,sloc from student sid where in(select sid from student where sid=105;
+
+select slname,sclass,spn from student where sid=(select max(sid) from student);
+select slname,sclass,spn from student where sid=(select min(sid) from student);
+    
+
+insert into hostel (hid,hname,hfee,sid)values ('h6','pg',8000,106);
+    
+  set autocommit =0;
+  savepoint one;
+  insert into hostel (hid,hname,hfee,sid)values ('h6','pkg',8000,106);
+    
+  select * from hostel;
+  ROLLBACK TO ONE;
+  select * from hostel;
+
+     
+
+   savepoint one;
+   update faculty set sal=9000 where sal=10000;
+   select * from no;
+   ROLLBACK TO ONE;
+
+
+
+---------------------------------union----------------------------
+
+select fsub from faculty union select sclass from student;
+select fsub from faculty union all select sclass from student;
+select fsub from faculty where sclass in( select sclass from student);
+
+
+
+
+-----------------------copying table---------------------------
+
+create table newtable as select * from student;
+select * from newtable;
+
+create table one like hostel;
+
+
+ -------------------------view--------------------------
+
+
+create view emp as select sname,slname,sloc,cid from student;
+show full tables;
+
+select * from emp;
+
+update emp set slname='koko' where sloc='goa';
+select * from emp;
+
+update student set sname='harsh' where cid=c2;
+ select * from student;
+
+
+create view newemp as select slname,sclass,spn from student limit 3;
+update newemp set sname = 'veer' where sclass='yoy';
+show full tables;
+
+
+-----------------------------tempory------------------------------
+
+create temporary table temp1 as select * from hostel where hname='colive';
+show  full tables;
+select * from temp1;
+
+
+
+------------------------------index--------------------------
+
+
+create index index1 on student (sloc);
+
+alter table student alter index index1 visible;
+
+alter table student alter index index1 invisible;
+
+
+
+
+------------------------------------------------------------
+--------------------------------function---Procedure----Exception Handling Loops - While Do, Repeat, Loop, Cursor  Trigger----------------------
+
+
+
+
+
+ set global log_bin_trust_function_creators = 1;
+
+delimiter / 
+create function countin() returns int(90)
+begin
+return (select max(sid) from student);
+end/
+delimiter;
+
+select  countid();
+set @result = (select  countid());
+select @result;
+
+
+
+delimiter /
+create function countif() returns varchar(90)
+begin
+return (select sname from student where sid=101 );
+end/
+delimiter;
+
+select countif();
+
+
+
+  delimiter /
+  create function showsi() returns varchar(80)
+  begin
+  return (select count(*)from student where sclass='bio');
+  end /
+  delimiter ;
+select showsi();
+
+
+
+delimiter /
+create function countclass(sub varchar(60)) returns int(60)
+begin
+return (select count(*) from student where sclass = sub);
+end/
+delimiter ;
+
+
+select countclass('bio');
+select countclass('hindi');
+select countclass('maths');
+
+
+
+  delimiter /
+  create function showavg() returns INT(80)
+  begin
+  return (select avg(fsal)from faculty);
+  end /
+  delimiter ;
+select showavg();
+
+
+
+delimiter /
+  create function sss( name varchar(20),loc varchar(50)) returns varchar(80)
+  begin
+  declare desg varchar(30);
+  select emp into desg from student where slname=name and sloc = loc;
+  return (desg);
+  end /
+  delimiter ;
+select ss('sam','indore');
+
+
+
+delimiter /
+ create function checkg(cost int(60)) returns varchar(50)
+begin
+declare msg varchar(70);
+
+if(10000> cost) then set msg = 'only use mess faculty';
+else set msg ='use full hostel faculty';
+end if;
+return (msg);
+end/
+delimiter;
+
+select checkg(90000);
+select checkg(8000);
+
+
+
+delimiter /
+create function display1()returns varchar(40)
+begin
+	return(select nosets from hostel where HID='H1');
+end /
+delimiter ;
+
+SELECT display1();
+
+	
+
+
+
+
+delimiter /
+create function getm(doj date) returns varchar(50)
+begin 
+declare yr int(30);
+declare msg varchar(50);
+set yr = year(doj);
+if(yr = 2023) then set msg = 'latest memeber';
+elseif (yr = 2022) then set msg='last year meme';
+elseif(yr<2022) then set msg = 'old memner';
+end if;
+return (msg);
+end/
+
+
+
+
+delimiter /
+create function evenod()returns varchar(40)
+begin
+	declare str varchar(30);
+    declare num int(20);
+    set num=10;
+    if (num%2=0)
+		then
+		set str="even number";
+	else set str="odd number";
+    end if;
+    return (str);
+end /
+delimiter ;
+
+select evenody();
+select * from hostel;
+
+
+
+
+delimiter/
+create procedure info()
+begin
+select * from student;
+end/
+delimiter;
+
+call info;
+
+
+delimiter /
+create procedure checkfo(man varchar(50))
+begin
+select * from student where sname = man;
+end/
+delimiter;
+call checko('harsh');
+
+
+
+delimiter/
+create procedure getiinfo(ca varchar(50),cst int(30))
+begin
+select sname,slname,sid,cid from student where sname=ca and sid = cst;
+end/
+delimiter ;
+call getiinfo('harsh',102)
+
+
+
+
+delimiter /
+create procedure getry(in locif varchar(90),out cty varchar(80))
+begin
+select fsub from faculty where fid = locif into cty;
+end/
+delimiter;
+call gety('f1' , @one);
+select @one;
+
+
+
+delimiter /
+create procedure getvalue(in  ccid varchar(60),out ffname varchar(70),out ffsub varchar(60))
+begin
+select fname , fsub into ffname , ffsub from faculty where cid=ccid;
+end/
+
+delimiter ;
+
+call getvalue('c3',@ch,@ss);
+select @ch ,@ss;
+
+
+
+delimiter /
+create procedure getvalue2(in ssid varchar(60),in ccid varchar(60))
+begin
+update student set sname = ssid where cid= ccid;
+select concat ('sname is ' , ssid ,'change now of if ', ccid) as confirmation ;
+end /
+delimiter ;
+
+call getvalue2( 'ram' , 'c1');
+
+
+
+delimiter /
+create procedure getcheck(in checkid varchar(60),out mk varchar(60),out mess varchar(40))
+begin
+select marks into mk from test where tid = checkid;
+case 
+when mk<50 then set mess='less then 50';
+when mk=50 then set mess='equal to 50';
+when mk>50 then set mess='gretter then 50';
+end case ;
+end/
+delimiter ;
+call getn('t1',@mm,@nn);
+select @mm,@nn;
+
+
+delimiter /
+create procedure printno()
+begin
+declare a int;
+declare strg varchar(40);
+set a=1;
+set strg ='';
+while(a<=5) do
+set strg = concat (strg , a , ',');
+set a=a+1;
+end while;
+select strg;
+end/
+delimiter ;
+call printn;
+
+
+
+delimiter /
+create procedure inserti()
+begin
+declare i int(10) default 0;
+declare n int(10) default 0;
+select count(*) from 
+
+
+set global log_bin_trust_function_creators=1;
+
+delimiter /
+create function evenodd1()returns varchar(40)
+begin
+	declare str varchar(30);
+    declare num int(20);
+    set num=10;
+    if (num%2=0)
+		then
+		set str="even number";
+	else set str="odd number";
+    end if;
+    return (str);
+end /
+delimiter ;
+
+select evenodd1();
+
+select * from hostel;
+ 
+
+
+delimiter /
+create function display()returns varchar(40)
+begin
+	return(select nosets from hostel);
+end /
+delimiter ;
+select display();
+delimiter ;
+select evenodd1();
+select * from hostel;
+
+
+
+
+
+
+delimiter /
+create function evenodd2(n1 int)returns varchar(40)
+begin
+	declare str varchar(30);
+    declare num int(20);
+    set num=n1;
+    if (num%2=0)
+		then
+		set str="even number";
+	else set str="odd number";
+    end if;
+    return (str);
+end /
+delimiter ;
+
+select evenodd2(12);
+
+
+
+
+
+    
+ delimiter /
+create procedure getb( a int)
+begin 
+select * from hostel where nosets = a;
+end /
+delimiter ;
+call getb(150);
+    
+   
+    delimiter //
+    create function countp() returns int(20)
+    begin
+    return (select *  from hostel where nosets>340);    
+    end //
+    delimiter;
+    select countp();
+  
+
+Delimiter /
+ CREATE PROCEDURE getstdname(INOUT stdnamelist varchar(500))
+ Begin
+DECLARE DONE int(10) default 0; 
+DECLARE stdname varchar(30) default'';
+
+DECLARE studentc CURSOR FOR select sname from student;
+ DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE = 1;
+
+OPEN studentc;
+getstdname : LOOP 
+FETCH studentc INTO stdname;
+IF
+ done = 1 THEN LEAVE getstdname;
+END IF;
+
+SET stdnamelist = concat(stdnamelist , stdname ,' \n');
+END LOOP getstdname;
+CLOSE studentc;
+End /
+
+SET @ListOFstd = ''
+call getstdname(@ListOF);
+ select @ListOFstd;
+
+
+
+delimiter /
+
+create trigger failedStudent after insert on test for each row
+
+Begin 
+if  
+new.marks < 50 then 
+insert into failedStudents values(new.studentid,new.marks);
+end if ;
+end /
+delimiter ;
+insert into test values('SC103','pol10',45,'2023103');
+
+
+
+
+
+Delimiter /
+create procedure errins(In studentid int(10) );
+Begin 	
+declare exit handler for 1062
+select 'Duplicate entry is inavlid for a primary key' AS message;
+insert into student values (studentid);
+End /
+Delimiter ;
+
+
+
+
+
+
+
+----------------------------------------------------------------------MONGO  DB------------------------------------------------------------------------------------
+
+
+
+
+
+Mongo
+
+show databases
+
+use ims
+
+
+show collections
+
+db.createCollection('sudent'); 
+
+db.book.insert((sname:'sham'})
+
+inserting documents
+
+db.student.insert({sname:chhaya})
+
+
+db.student.insert([{sname:'jojo'},{cid:'c1'}]
+
+
+db.student.find()
+
+db.student.find().pretty()
+
+db.student.drop();
+
+var bulk = db. student initializeUnorderedBulkOp();
+
+bulk.insert((Name : 'Hrishabh' , Class : 'Science');
+
+bulk.insert((Name : 'Chirayu' , Class : 'Agriculture',Grade : 'A');
+
+bulk.execute();
+
+
+
+db.student find() pretty().limit(2)
+
+db.student.find() skip(2)
+
+db.student findOne() 
+
+db.teacher.find({}.{_id:0,Name :1})
+
+db.teacher.find({}.{_id:0,Name :1,class:1})
+
+
+db.student.find({name:'Rajveer'}).pretty() 
+
+
+db.student.find({Grade:'A',Subject:'SCience'),{id:0,fname: 1,lname:1,}).pretty()
+
+db.student.find({$or:[{Grade:'A'},{Subject:'SCience'}]),{id:0,fname: 1,lname:1,}).pretty()
+
+db.Publisher.find({StudentId:{$In:['Chirayu', 'Agriculture' ]}}. {id:0,Studentid:1})
+
+db.test.find({Marks:{$lt:75}},{_id:0.,studentid:1}) 
+
+db.test.find({Marks:{$gt:75}},{_id:0.,studentid:1})
+
+db.test.find({Marks:{$gt:75}},{_id:0.,studentid:1}).sort({cost:1})
+
+db.test.find({Marks:{$gt:75}},{_id:0.,studentid:1}).sort({cost:-1})
+
+db.test.aggregate([{$group:{_id:'$studentid',Countctr:{$sum:1}}}]),
+
+db.test.aggregate([{$group:{_id:'$studentid',avgmarks:{$avg:'$marks'}}}]),
+
+db.studen.findAndModify({query:{subject:'Science'), update:{$inc:{major:'Bio'}}, new true}}
+
+db.teacher.update({subjectID:'SC101'}, {$set: {subjectID:'Eco101'}})  
+
+db.teacher.updatemany({subjectID:'SC101'}, {$set: {subjectID:'Eco101'}})  
+
+db.teacher.update({subjectID:'SC101'}, {$unset: {subjectID:'Eco101'}})  
+
+db.teacher.updatemany({subjectID:'SC101'}, {$unset: {subjectID:'Eco101'}})  
+
+
+
+
+
+
+
